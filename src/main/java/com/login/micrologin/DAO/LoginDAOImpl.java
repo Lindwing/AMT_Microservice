@@ -13,7 +13,7 @@ public class LoginDAOImpl implements LoginDAO{
 
     static {
         users.add(new User(1, "Rui", "user", "1234"));
-        users.add(new User(2, "Admin", "admin", "zjtBcEx0h(=4yczntlxn"));
+        users.add(new User(2, "Admin", "admin", "admin"));
         users.add(new User(3, "Filipe", "user", "AA12aa$$"));
     }
 
