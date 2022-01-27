@@ -2,12 +2,12 @@ package com.login.micrologin.model;
 
 public class Account {
     private int id;
-    private String nom;
+    private String username;
     private String role;
 
-    public Account(int id, String nom, String role) {
+    public Account(int id, String username, String role) {
         this.id = id;
-        this.nom = nom;
+        this.username = username;
         this.role = role;
     }
 
@@ -19,12 +19,12 @@ public class Account {
         this.id = id;
     }
 
-    public String getNom() {
-        return nom;
+    public String getUsername() {
+        return username;
     }
 
-    public void setNom(String nom) {
-        this.nom = nom;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public void setRole(String role) {
@@ -39,7 +39,7 @@ public class Account {
     public String toString() {
         return "Account{" +
                 "id=" + id +
-                ", nom='" + nom + '\'' +
+                ", username='" + username + '\'' +
                 ", role=" + role +
                 '}';
     }

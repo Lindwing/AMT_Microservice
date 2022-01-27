@@ -1,7 +1,6 @@
 package com.login.micrologin.Service;
 
-import com.login.micrologin.DAO.LoginDAO;
-import com.login.micrologin.DAO.LoginDAOImpl;
+import com.login.micrologin.DAO.UserRepository;
 import com.login.micrologin.model.Account;
 import com.login.micrologin.model.TokenDTO;
 import com.login.micrologin.model.User;
@@ -12,22 +11,30 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.io.*;
 import java.nio.charset.Charset;
 import java.time.Instant;
 import java.util.Date;
 
 public class LoginService {
-    private final LoginDAOImpl loginDAO;
+    private final UserRepository userRepository;
 
-    public LoginService(LoginDAO loginDAO){
-        this.loginDAO = new LoginDAOImpl();
+    public LoginService(UserRepository userRepository){
+        this.userRepository = userRepository;
     }
 
-        public ResponseEntity<TokenDTO> login(@RequestBody User user){
+        public ResponseEntity<TokenDTO> login(@RequestBody User user) throws IOException {
+        final String jwtSecretPath = "/home/admin/Secret/SecretJWT";
+
         HttpStatus status;
         int id =-1;
         String role = "";
-        User userDB = loginDAO.findByName(user.getUsername());
+        User userDB = userRepository.findByUsername(user.getUsername());
+
+        //read the url file
+        File fileJWT = new File(jwtSecretPath);
+        BufferedReader brJWT = new BufferedReader(new FileReader(fileJWT));
+        String tokenSecret = brJWT.readLine();
 
         if(userDB != null && user.getPassword().equals(userDB.getPassword())){
             id = userDB.getId();
@@ -46,13 +53,11 @@ public class LoginService {
                     .setIssuer("SHOPELS")
                     .setSubject(user.getUsername())
                     .claim("role", role)
-                    // Fri Jun 24 2016 15:33:42 GMT-0400 (EDT)
-                    .setIssuedAt(Date.from(Instant.ofEpochSecond(1466796822L)))
-                    // Sat Jun 24 2116 15:33:42 GMT-0400 (EDT)
-                    .setExpiration(Date.from(Instant.ofEpochSecond(4622470422L)))
+                    .setIssuedAt(new Date(System.currentTimeMillis()))
+                    .setExpiration(new Date(System.currentTimeMillis() + (2 * 60 * 60 * 1000)))//ajoute 2 heure
                     .signWith(
                             SignatureAlgorithm.HS256,
-                            "czvFbg2kmvqbcu(7Ux+c".getBytes(Charset.forName("UTF-8"))
+                            tokenSecret.getBytes(Charset.forName("UTF-8"))
                     );
         }
         catch(Exception errorMessage){
@@ -66,13 +71,16 @@ public class LoginService {
     public ResponseEntity<Account> register(@RequestBody User user){
         HttpStatus status;
         int id =-1;
-        String role = "";
+        String role = "user";
 
         if(checkPassword(user.getPassword())){
-            if(loginDAO.findByName(user.getUsername()) == null){
-                role = "user";
-                id = loginDAO.nbID();
-                loginDAO.save(new User(id, user.getUsername(), role, user.getPassword()));
+            if(userRepository.findByUsername(user.getUsername()) == null){
+                User userDB = new User();
+                userDB.setUsername(user.getUsername());
+                userDB.setPassword(user.getPassword());
+                userDB.setRole(role);
+                userDB = userRepository.save(userDB);
+                id = userDB.getId();
                 status = HttpStatus.CREATED;
             }
             else {

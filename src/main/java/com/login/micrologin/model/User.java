@@ -1,10 +1,24 @@
 package com.login.micrologin.model;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "user")
 public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+
+    @Column(nullable = false, unique = true)
     private String username;
+
+    @Column(nullable = false, length = 20)
     private String role;
+
+    @Column(nullable = false)
     private String password;
+
+    public User(){}
 
     public User(int id, String username, String role, String password) {
         this.id = id;
@@ -17,13 +31,9 @@ public class User {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public String getUsername() {return username;}
 
-    public void setName(String username) {
+    public void setUsername(String username) {
         this.username = username;
     }
 

@@ -1,41 +1,40 @@
 package com.login.micrologin.web.controller;
 
-import com.login.micrologin.DAO.LoginDAO;
-import com.login.micrologin.DAO.LoginDAOImpl;
+import com.login.micrologin.DAO.UserRepository;
 import com.login.micrologin.Service.LoginService;
 import com.login.micrologin.model.Account;
 import com.login.micrologin.model.TokenDTO;
 import com.login.micrologin.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @RestController
 public class LoginController {
     private final LoginService loginService;
 
-    private final LoginDAO loginDAO;
+    private final UserRepository userRepository;
 
-    public LoginController(LoginDAO loginDAO){
-        this.loginDAO = new LoginDAOImpl();
-        this.loginService = new LoginService(loginDAO);
+    @Autowired
+    public LoginController(UserRepository userRepository){
+        this.userRepository = userRepository;
+        this.loginService = new LoginService(userRepository);
     }
 
-    @PostMapping("/auth/login")
+    @PostMapping(value = "/auth/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<TokenDTO> login(@RequestBody User user) {
-        //TokenDTO loginResponse = LoginService.login(user);
-        //return new ResponseEntity<TokenDTO>(loginResponse, HttpStatus.OK);
+    public ResponseEntity<TokenDTO> login(@RequestBody User user) throws IOException {
         return loginService.login(user);
     }
 
     //Récupérer un produit par son Id
-    @PostMapping(value = "/accounts/register")
+    @PostMapping(value = "/accounts/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Account> register(@RequestBody User user) {
-        //User user = new User(id, "Rui", "user", "1234");
-        //Account loginResponse = LoginService.register(user);
-        //return new ResponseEntity<Account>(loginResponse, HttpStatus.CREATED);
         return loginService.register(user);
     }
 
