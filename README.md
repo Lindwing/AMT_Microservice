@@ -24,3 +24,7 @@ On execute le fichier ./mvnw spring-boot:run
 ## Créer compte administrateur
 Les comptes utilisateur sont tous crée avec le rôle user. \
 On crée un compte via l'application, puis dans la base de donnée on chege le role de l'utilisateur.
+
+## URL pour le login et le register
+L'URL est http://localhost:9090/auth/login pour le login \
+L'URL est http://localhost:9090/accounts/register pour le register
