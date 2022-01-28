@@ -11,4 +11,4 @@ Mysql ou MariaDB
 Maven
 
 ## Utilisation dans Intellij
-On commence par cloner le projet : git clone https://github.com/Lindwing/AMT_Microservice. On crée une base de donnée avec le nom : AMT_Authentification On ouvre le projet via Intillij. Dans le run/debug configuration, on sélectionne Springboot et on met com.login.micrologin.MicrologinApplication dans main class.
+On commence par cloner le projet : git clone https://github.com/Lindwing/AMT_Microservice. On crée une base de donnée avec le nom : AMT_Authentification On ouvre le projet via Intellij. Dans le run/debug configuration, on sélectionne Springboot et on met com.login.micrologin.MicrologinApplication dans main class.
